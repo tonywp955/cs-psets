@@ -15,13 +15,10 @@ int main(int argc, char *argv[])
         cmt2 = 4,
         endpot = 5,
         blackhole1 = 6,
-        blackhole2 = 7,
-        quote1 = 8,
-        quote2 = 9
+        blackhole2 = 7
     };
     
     bool block = true;
-    bool quote = true;
     enum STATE state = raw;
     
     while((ch = fgetc(p)) != EOF)
@@ -37,10 +34,11 @@ int main(int argc, char *argv[])
                     block = true;
                 } else if (ch == '*') {
                     state = cmt2;
+                    
                 } else {
                     state = raw;
                 }
-        }         else if (state == cmt1) {
+        }else if (state == cmt1) {
             if (ch == '\n') {
                     printf("\n");
                     state = raw;
@@ -48,31 +46,24 @@ int main(int argc, char *argv[])
                     state = blackhole1;
                     block = true;
                 } else if (ch == ' ' && block == true){}
-                else if (ch == '"') {
-                    state = quote1;
-                }
                 else {
                     printf("%c", ch); 
                     block = false;
                 }
-                
         }else if (state == cmt2)                
         {if (ch == '*') {
                     state = endpot;
                 } else if (ch == '@') {
                     block = true;
                     state = blackhole2;
-                } else if (ch == '\n' && quote == true) {
+                } else if (ch == '\n'){
                     block = true;
                     printf("\n");
                 }else if (ch == ' ' && block == true) {
-                }else if (ch == '"') {
-                    state = quote2;
-                 }
-        else{ if (quote == true) {
+                    //printf("what");
+                }else{
                     printf("%c", ch);
                     block = false;
-        }
                 }
         }else if (state == endpot) {
                 if (ch == '/') {
@@ -86,10 +77,7 @@ int main(int argc, char *argv[])
                     printf("\n");
                     block = true;
                 }else if (ch==' ' && block == true){
-                    state = cmt2;
-                } else if (ch == '"') {
-                    state = quote2;
-                    block = false;}
+                }
                 else {
                     printf("%c", ch);
                     block = false;
@@ -105,10 +93,9 @@ int main(int argc, char *argv[])
                 {
                     state = cmt2;
                 }
-        } else if (state == quote1) {
-            if (ch == '"') {state = cmt1; quote = false;}         
-        } else if (state == quote2) {
-            if (ch == '"') {state = cmt2; quote = false;}         
-        }            
+        }        
+    
     }
 }
+
+
